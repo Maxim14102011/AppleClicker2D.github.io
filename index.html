@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Clicker</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #apple {
+            width: 50%;
+            max-width: 400px;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+        }
+        #apple:active {
+            transform: scale(1.2) rotate(10deg);
+        }
+        #score {
+            font-size: 48px;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 60px;
+        }
+        p {
+            font-size: 24px;
+        }
+        #musicControl {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+        }
+        #volumeControl {
+            width: 150px;
+            height: 10px;
+            margin: 0 10px;
+        }
+        .musicIcon {
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id="musicControl">
+        <img src="Music off.png" class="musicIcon" alt="Music Off">
+        <input id="volumeControl" type="range" min="0" max="1" step="0.01" value="1">
+        <img src="Music on.png" class="musicIcon" alt="Music On">
+    </div>
+    <h1>Apple Clicker</h1>
+    <p id="score">Score: 0</p>
+    <img id="apple" src="apple.png" alt="Apple">
+    <p><a href="https://www.roblox.com/games/128946901785294/Apple-Clicker-2D-Alpha" target="_blank">Check out Full Game!</a></p>
+
+    <audio id="clickSound" src="minecraft-click-cropped.mp3"></audio>
+    <audio id="bgMusic" src="rizzlas-c418-224649 (1).mp3" loop></audio>
+
+    <script>
+        let score = localStorage.getItem("score") ? parseInt(localStorage.getItem("score")) : 0; // Отримуємо збережений рахунок або ставимо 0
+        const apple = document.getElementById("apple");
+        const scoreDisplay = document.getElementById("score");
+        const clickSound = document.getElementById("clickSound");
+        const bgMusic = document.getElementById("bgMusic");
+        const volumeControl = document.getElementById("volumeControl");
+
+        // Встановлюємо початкову гучність для музики
+        bgMusic.volume = volumeControl.value;
+        
+        // Гра почнеться з кнопки або взаємодії
+        document.addEventListener("click", function() {
+            bgMusic.play().catch(e => console.log("Background music blocked by browser"));
+        });
+
+        apple.addEventListener("click", function() {
+            score++;
+            scoreDisplay.textContent = "Score: " + score;
+            apple.style.transform = "scale(1.2) rotate(10deg)";
+            setTimeout(() => {
+                apple.style.transform = "scale(1) rotate(0deg)";
+            }, 100);
+            
+            clickSound.currentTime = 0;
+            clickSound.volume = 1.0;
+            clickSound.play().catch(e => console.log("Click sound blocked"));
+
+            // Зберігаємо рахунок у LocalStorage
+            localStorage.setItem("score", score);
+        });
+
+        // Слухач для зміни гучності музики
+        volumeControl.addEventListener("input", function() {
+            bgMusic.volume = this.value;
+        });
+
+        // Оновлюємо відображення рахунку при завантаженні сторінки
+        scoreDisplay.textContent = "Score: " + score;
+    </script>
+</body>
+</html>
